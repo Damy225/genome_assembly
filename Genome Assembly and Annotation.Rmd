@@ -1,0 +1,135 @@
+---
+title: "Genome Assembly and Annotation"
+author: "20503703 -Oluwadamilola Soyinka"
+date: "2023-02-07"
+output: html_document
+---
+
+
+## Analysing long and short read sequencing data for three samples
+
+The first step merging and seperating the illumina short and nanopore long reads for each samples into respective directory.
+
+```{merging samples together}
+group2_merge_script.sh
+```
+
+Tools for long reads are longqc, nanoplot, fastQc, MinionQc etc
+
+The tool used for the nanopore long reads was nanoplot.
+
+```{nanoplot}
+#create and activate new environment
+conda create -p /shared/Project1_Resources/Group2/shared_envs/nanoplot
+conda activate nanoplot
+
+#script to run nanoplot
+nanoplot.sh
+
+```
+
+## Assembling the long and short reads
+
+Unicycler was used to assemble the long and short reads and hybrid reads.
+
+It failed to run the illumina short reads(it gave a memory error when running the short reads), so Spades was installed to assemble the short reads using kmer values of 21, 33 and 55.
+
+Afterwards, Unicycler was used to run the hybrids with the kmer values guven by Spahdes
+
+
+```{Unicycler v 0.5.0}
+#create and activate new environment
+conda create -p /shared/Project1_Resources/Group2/shared_envs/Unicycler
+conda activate Unicycler
+
+#script to run unicycler for long reads
+S1long.sh
+S3long.sh
+S5long.sh
+
+#scripts to run unicycler for hybrids
+S1hybrid.sh
+s3hybrid.sh
+s5hybrid.sh
+```
+
+The output files were in gfa and fasta format.
+
+Spades
+
+```{Spades to assembly the short reads}
+#create and activate new environment
+conda create -p /shared/Project1_Resources/Group2/shared_envs/spades
+conda activate spades
+
+#scripts to run spades on short reads
+S1shortspades.sh
+shortspadesS3.sh
+shortspadesS5.sh
+```
+
+The output files were also in gfa and fasta format aside other formats.
+
+## Genome Annotation
+
+The tools used for the genome annotation and comparison was quast and prokka.
+
+A blast search revealed the organism as Haloferax volcanii DS2.
+
+Quast was used in assembly comparison between the samples and the reference genome of H. volcanii.
+
+```{Quast}
+#create and activate new environment
+conda create -p /shared/Project1_Resources/Group2/shared_envs/quast
+conda activate quast
+
+#scripts to run quast
+quastS1.sh 
+quastS3.sh
+quastS5.sh
+
+```
+
+The output files were html, pdf tsv and txt formats.
+
+```{Prokka}
+#create and activate new environment
+conda create -p /shared/Project1_Resources/Group2/shared_envs/prokka
+conda activate prokka
+
+#scripts to run prokka
+prokkaS1.sh
+prokkaS3.sh
+prokkaS5.sh
+```
+
+Prokha gave an annotated.gff file for the hybrid assembly.
+
+# Bandage was installed to visualise the assemblies (gfa files of the samples)
+
+#Blast was installed to give a comparison files which can be visualised in ACT to find the differences between the samples.
+
+```{Blast}
+#create and activate new environment
+conda create -p /shared/Project1_Resources/Group2/shared_envs/blast
+conda activate blast
+
+#Blast was installed to create a comparison file of the samples and the reference genome.
+#scripts to run blast
+blast.sh
+```
+
+#Artemis and ACT was installed locally to visualise the comparison files.
+
+After viewing in ACT, samtools was installed to extract the indel regions of the samples for further analysis.
+
+```{samtools}
+#create and activate new environment
+conda create -p /shared/Project1_Resources/Group2/shared_envs/samtools
+conda activate samtools
+
+#script to run samtools
+samtools.sh
+```
+
+
